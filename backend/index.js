@@ -74,3 +74,4 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Ekspor app untuk Vercel
 module.exports = app;
+
