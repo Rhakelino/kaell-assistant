@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:9000/chat'; // URL backend kita
+// URL backend sekarang hanya '/chat'.
+// Saat development, Vite akan meneruskannya ke http://localhost:9000
+// Saat di Vercel, vercel.json akan meneruskannya ke fungsi backend
+const API_URL = '/chat';
 
 /**
  * Mengirimkan pesan ke backend dan mengembalikan respons dari AI.
@@ -26,6 +29,7 @@ export const sendMessageToAI = async (prompt) => {
   } catch (error) {
     console.error("API call failed:", error);
     // Lemparkan error lagi agar bisa ditangkap oleh komponen yang memanggil
-    throw new Error('Failed to get a response from the server. Please check if the backend is running.');
+    throw new Error("Failed to get a response from the server. Please check the backend connection.");
   }
 };
+
