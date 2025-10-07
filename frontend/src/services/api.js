@@ -1,7 +1,11 @@
-// URL backend sekarang hanya '/chat'.
-// Saat development, Vite akan meneruskannya ke http://localhost:9000
-// Saat di Vercel, vercel.json akan meneruskannya ke fungsi backend
-const API_URL = '/chat';
+/**
+ * Alamat base URL untuk API backend.
+ * Saat development, ia akan menunjuk ke proxy Vite ('/chat').
+ * Saat production (online di Vercel), ia akan menunjuk ke URL backend kita yang sebenarnya.
+ */
+const API_BASE_URL = import.meta.env.PROD 
+  ? 'https://kaell-assistant-api.vercel.app' // <-- GANTI DENGAN URL BACKEND ANDA
+  : '';
 
 /**
  * Mengirimkan pesan ke backend dan mengembalikan respons dari AI.
@@ -10,7 +14,7 @@ const API_URL = '/chat';
  */
 export const sendMessageToAI = async (prompt) => {
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(`${API_BASE_URL}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -19,8 +23,8 @@ export const sendMessageToAI = async (prompt) => {
     });
 
     if (!response.ok) {
-      // Jika respons dari server adalah error (misal: 500, 404)
-      throw new Error('Network response was not ok.');
+      const errorData = await response.json();
+      throw new Error(errorData.details || 'Network response was not ok.');
     }
 
     const data = await response.json();
@@ -28,8 +32,7 @@ export const sendMessageToAI = async (prompt) => {
 
   } catch (error) {
     console.error("API call failed:", error);
-    // Lemparkan error lagi agar bisa ditangkap oleh komponen yang memanggil
-    throw new Error("Failed to get a response from the server. Please check the backend connection.");
+    throw new Error(error.message || 'Failed to get a response from the server.');
   }
 };
 
