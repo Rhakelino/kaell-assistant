@@ -13,7 +13,6 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "vite": "^7.1.7"
-
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
@@ -27,6 +26,5 @@
     "globals": "^16.4.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.18"
-
   }
 }
