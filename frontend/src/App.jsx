@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import Message from './components/Message';
 import ChatInput from './components/ChatInput';
 import WelcomeScreen from './components/WelcomeScreen';
+import { sendMessageToAI } from './services/api';
 
 export default function EnhancedChatbot() {
   const [conversations, setConversations] = useState([
@@ -156,17 +157,11 @@ export default function EnhancedChatbot() {
       const currentConv = conversations.find(c => c.id === activeConversationId);
       const chatHistory = currentConv ? [...currentConv.messages, userMessage] : [userMessage];
 
-      const response = await fetch('http://localhost:9000/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: inputMessage,
-          history: chatHistory
-        }),
+      const data = await sendMessageToAI({
+        prompt: inputMessage,
+        history: chatHistory,
         signal: abortControllerRef.current.signal
       });
-
-      const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to get response');

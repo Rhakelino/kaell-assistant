@@ -2,30 +2,37 @@ const API_URL = 'https://kaell-assistant-api.vercel.app/chat'; // URL backend ki
 
 /**
  * Mengirimkan pesan ke backend dan mengembalikan respons dari AI.
- * @param {string} prompt Pesan yang akan dikirim.
- * @returns {Promise<string>} Respons teks dari AI.
+ * @param {Object} params Parameter untuk request
+ * @param {string} params.prompt Pesan yang akan dikirim
+ * @param {Array} params.history Riwayat chat (opsional)
+ * @param {AbortSignal} params.signal Signal untuk membatalkan request (opsional)
+ * @returns {Promise<Object>} Respons dari AI
  */
-export const sendMessageToAI = async (prompt) => {
+export const sendMessageToAI = async ({ prompt, history = [], signal = null }) => {
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({ prompt, history }),
+      signal,
     });
 
     if (!response.ok) {
-      // Jika respons dari server adalah error (misal: 500, 404)
-      throw new Error('Network response was not ok.');
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Network response was not ok');
     }
 
     const data = await response.json();
-    return data.response;
+    return data;
 
   } catch (error) {
     console.error("API call failed:", error);
-    // Lemparkan error lagi agar bisa ditangkap oleh komponen yang memanggil
-    throw new Error('Failed to get a response from the server. Please check if the backend is running.');
+    if (error.name === 'AbortError') {
+      throw error;
+    }
+    throw new Error(error.message || 'Failed to get a response from the server');
   }
 };
