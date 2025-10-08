@@ -1,4 +1,4 @@
-const API_URL = 'https://kaell-assistant-api.vercel.app/'; // URL backend kita
+const API_URL = 'https://kaell-assistant-api.vercel.app/chat'; // URL backend kita
 
 /**
  * Mengirimkan pesan ke backend dan mengembalikan respons dari AI.
