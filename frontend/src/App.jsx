@@ -163,8 +163,8 @@ export default function EnhancedChatbot() {
         signal: abortControllerRef.current.signal
       });
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to get response');
+      if (!data || !data.response) {
+        throw new Error('Failed to get response from server');
       }
 
       simulateTypingEffect(data.response, aiMessageId);
